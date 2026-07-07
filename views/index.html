@@ -1,56 +1,113 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LUNIZX — الانطلاقة</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    html,body{height:100%;font-family:'Tajawal',sans-serif;overflow:hidden}
-    body{
-      display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;
-      background:linear-gradient(-45deg,#0f0c29,#302b63,#24243e,#ff512f,#dd2476);
-      background-size:400% 400%;animation:bg 18s ease infinite;
-    }
-    @keyframes bg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-    .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;animation:float 12s ease-in-out infinite}
-    .orb1{width:340px;height:340px;background:#ff512f;top:-80px;left:-60px}
-    .orb2{width:300px;height:300px;background:#1fa2ff;bottom:-90px;right:-70px;animation-delay:-4s}
-    .orb3{width:260px;height:260px;background:#7f00ff;top:40%;right:20%;animation-delay:-8s}
-    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-40px)}}
-    .card{
-      position:relative;z-index:2;padding:60px 70px;border-radius:28px;
-      background:rgba(255,255,255,.08);backdrop-filter:blur(18px);
-      border:1px solid rgba(255,255,255,.18);box-shadow:0 30px 80px rgba(0,0,0,.45);
-      animation:pop 1s cubic-bezier(.2,.8,.2,1)both;
-    }
-    @keyframes pop{from{opacity:0;transform:translateY(40px) scale(.9)}to{opacity:1;transform:none}}
-    h1{
-      font-size:clamp(48px,9vw,110px);font-weight:900;letter-spacing:4px;
-      background:linear-gradient(90deg,#fff,#ffd8a8,#ff8fab,#fff);
-      background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
-      animation:shine 4s linear infinite;text-shadow:0 0 40px rgba(255,255,255,.25)
-    }
-    @keyframes shine{to{background-position:200% center}}
-    p.tag{margin-top:14px;font-size:clamp(16px,2.5vw,24px);font-weight:700;color:#e8e8ff;opacity:.9}
-    .badge{
-      display:inline-block;margin-top:28px;padding:12px 30px;border-radius:999px;font-weight:700;
-      background:linear-gradient(90deg,#ff512f,#dd2476);box-shadow:0 10px 30px rgba(221,36,118,.5);
-      animation:pulse 2.5s ease-in-out infinite
-    }
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-    footer{position:absolute;bottom:22px;width:100%;z-index:2;font-size:13px;color:rgba(255,255,255,.6)}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>LUNIZX Snake — الأسطورة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--neon:#00ffc3;--neon2:#ff2e9a;--bg1:#0b0e23;--bg2:#1a0b2e}
+html,body{height:100%;font-family:'Tajawal',sans-serif;overflow:hidden;color:#fff}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;
+background:radial-gradient(circle at 20% 20%,#231a4d 0%,transparent 40%),radial-gradient(circle at 80% 80%,#3a0f4d 0%,transparent 40%),linear-gradient(-45deg,var(--bg1),var(--bg2),#0b0e23);
+background-size:100% 100%,100% 100%,400% 400%;animation:bg 20s ease infinite}
+@keyframes bg{0%{background-position:0 0,0 0,0% 50%}50%{background-position:0 0,0 0,100% 50%}100%{background-position:0 0,0 0,0% 50%}}
+.title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(26px,6vw,44px);letter-spacing:3px;
+background:linear-gradient(90deg,var(--neon),#fff,var(--neon2),var(--neon));background-size:200% auto;
+-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 4s linear infinite;
+text-shadow:0 0 30px rgba(0,255,195,.4);margin-bottom:6px}
+@keyframes shine{to{background-position:200% center}}
+.hud{display:flex;gap:18px;margin-bottom:12px;font-weight:700;font-size:18px}
+.chip{padding:6px 18px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(8px)}
+.chip b{color:var(--neon)}
+.chip.best b{color:var(--neon2)}
+.wrap{position:relative;border-radius:20px;padding:10px;
+background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+box-shadow:0 0 60px rgba(0,255,195,.15),0 30px 80px rgba(0,0,0,.5);backdrop-filter:blur(10px)}
+canvas{display:block;border-radius:14px;background:rgba(0,0,0,.35);touch-action:none}
+.overlay{position:absolute;inset:10px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+background:rgba(10,12,30,.82);backdrop-filter:blur(6px);text-align:center;gap:14px;transition:.3s}
+.overlay h2{font-family:'Orbitron',sans-serif;font-size:clamp(22px,5vw,34px);color:var(--neon);text-shadow:0 0 20px var(--neon)}
+.overlay p{opacity:.85;max-width:280px;line-height:1.7}
+.btn{cursor:pointer;border:none;font-family:'Tajawal';font-weight:900;font-size:19px;color:#0b0e23;
+padding:14px 40px;border-radius:999px;background:linear-gradient(90deg,var(--neon),#5efce8);
+box-shadow:0 10px 30px rgba(0,255,195,.45);transition:.2s}
+.btn:hover{transform:scale(1.06)}
+.hide{opacity:0;pointer-events:none}
+.pad{display:none;margin-top:16px;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,64px);gap:8px;justify-content:center}
+.pad button{width:64px;height:64px;border-radius:16px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:26px;backdrop-filter:blur(8px)}
+.pad button:active{background:var(--neon);color:#0b0e23}
+.up{grid-column:2}.left{grid-column:1;grid-row:2}.down{grid-column:2;grid-row:2}.right{grid-column:3;grid-row:2}
+.foot{margin-top:14px;font-size:12px;opacity:.5}
+@media(hover:none){.pad{display:grid}}
+</style>
 </head>
 <body>
-  <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
-  <div class="card">
-    <h1>LUNIZX</h1>
-    <p class="tag">شُحن الموقع بنجاح على Railway ⚡</p>
-    <div class="badge">أول تطبيق لي على الإنترنت</div>
+<div class="title">LUNIZX SNAKE</div>
+<div class="hud">
+  <div class="chip">النقاط: <b id="score">0</b></div>
+  <div class="chip best">الأعلى: <b id="best">0</b></div>
+</div>
+<div class="wrap">
+  <canvas id="c" width="420" height="420"></canvas>
+  <div class="overlay" id="ov">
+    <h2 id="ovt">ابدأ اللعبة</h2>
+    <p id="ovp">استخدم الأسهم أو اسحب بإصبعك للتحكم. كُل الكرات الوردية وكبّر ثعبانك بدون ما تصطدم بنفسك!</p>
+    <button class="btn" id="startBtn">🎮 العب الآن</button>
   </div>
-  <footer>© 2026 LUNIZX — صُنع بشغف. جميع الحقوق محفوظة.</footer>
+</div>
+<div class="pad">
+  <button class="up" data-d="up">▲</button>
+  <button class="left" data-d="left">◀</button>
+  <button class="down" data-d="down">▼</button>
+  <button class="right" data-d="right">▶</button>
+</div>
+<div class="foot">© 2026 LUNIZX — صُنع بشغف ⚡</div>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d');
+const G=21,CELL=cv.width/G;
+let snake,dir,ndir,food,score,best,speed,loop,dead,parts=[];
+best=+(localStorage.getItem('lunizx_best')||0);document.getElementById('best').textContent=best;
+const ov=document.getElementById('ov'),ovt=document.getElementById('ovt'),ovp=document.getElementById('ovp');
+function reset(){snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];dir={x:1,y:0};ndir=dir;score=0;speed=130;dead=false;parts=[];placeFood();document.getElementById('score').textContent=0}
+function placeFood(){while(true){food={x:(Math.random()*G)|0,y:(Math.random()*G)|0};if(!snake.some(s=>s.x===food.x&&s.y===food.y))break}}
+function start(){reset();ov.classList.add('hide');clearInterval(loop);loop=setInterval(tick,speed)}
+function setDir(d){const m={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}[d];if(!m)return;if(m.x===-dir.x&&m.y===-dir.y)return;ndir=m}
+function tick(){
+ dir=ndir;
+ const h={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+ if(h.x<0||h.y<0||h.x>=G||h.y>=G||snake.some(s=>s.x===h.x&&s.y===h.y))return gameOver();
+ snake.unshift(h);
+ if(h.x===food.x&&h.y===food.y){score+=10;document.getElementById('score').textContent=score;burst(food.x,food.y);placeFood();if(speed>60){speed-=4;clearInterval(loop);loop=setInterval(tick,speed)}}
+ else snake.pop();
+ draw();
+}
+function burst(gx,gy){for(let i=0;i<14;i++)parts.push({x:gx*CELL+CELL/2,y:gy*CELL+CELL/2,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:1})}
+function draw(){
+ x.clearRect(0,0,cv.width,cv.height);
+ x.strokeStyle='rgba(255,255,255,.04)';for(let i=1;i<G;i++){x.beginPath();x.moveTo(i*CELL,0);x.lineTo(i*CELL,cv.height);x.moveTo(0,i*CELL);x.lineTo(cv.width,i*CELL);x.stroke()}
+ const t=Date.now()/300;x.save();x.shadowColor='#ff2e9a';x.shadowBlur=18;x.fillStyle='#ff2e9a';
+ const fs=CELL*(0.7+Math.sin(t)*0.12);x.beginPath();x.arc(food.x*CELL+CELL/2,food.y*CELL+CELL/2,fs/2,0,7);x.fill();x.restore();
+ snake.forEach((s,i)=>{const p=i/snake.length;x.save();x.shadowColor='#00ffc3';x.shadowBlur=i===0?22:10;
+  x.fillStyle=i===0?'#eafff9':'rgba(0,'+(255-p*120)+','+(195-p*40)+',1)';
+  const r=6,px=s.x*CELL+2,py=s.y*CELL+2,w=CELL-4,hh=CELL-4;
+  x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+hh,r);x.arcTo(px+w,py+hh,px,py+hh,r);x.arcTo(px,py+hh,px,py,r);x.arcTo(px,py,px+w,py,r);x.fill();x.restore()});
+ for(let i=parts.length-1;i>=0;i--){const q=parts[i];q.x+=q.vx;q.y+=q.vy;q.life-=0.04;if(q.life<=0){parts.splice(i,1);continue}x.globalAlpha=q.life;x.fillStyle='#ff2e9a';x.fillRect(q.x,q.y,3,3);x.globalAlpha=1}
+}
+function gameOver(){
+ clearInterval(loop);dead=true;
+ if(score>best){best=score;localStorage.setItem('lunizx_best',best);document.getElementById('best').textContent=best;ovp.textContent='🏆 رقم قياسي جديد! سجّلت '+score+' نقطة. تقدر تكسره؟'}
+ else ovp.textContent='انتهت الجولة عند '+score+' نقطة. حاول مرة ثانية وحطّم رقمك القياسي!';
+ ovt.textContent='انتهت اللعبة';document.getElementById('startBtn').textContent='🔁 العب مرة ثانية';ov.classList.remove('hide');
+}
+document.getElementById('startBtn').onclick=start;
+addEventListener('keydown',e=>{const k={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'}[e.key];if(k){e.preventDefault();setDir(k)}});
+document.querySelectorAll('.pad button').forEach(b=>b.addEventListener('click',()=>setDir(b.dataset.d)));
+let sx=null,sy=null;cv.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+cv.addEventListener('touchmove',e=>{if(sx==null)return;const dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;if(Math.abs(dx)+Math.abs(dy)<24)return;if(Math.abs(dx)>Math.abs(dy))setDir(dx>0?'right':'left');else setDir(dy>0?'down':'up');sx=null},{passive:true});
+reset();draw();
+</script>
 </body>
 </html>
